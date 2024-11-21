@@ -1,14 +1,26 @@
 import mongoose from 'mongoose';
-const cartCollection = 'carts';
-//Creo carrito
-const cartSchema = new mongoose.Schema({
-    products: [
-        {
-            product: { type: mongoose.Schema.Types.ObjectId, ref: 'products'},
-            quantity: { type: Number, default: 1 },
-        },
-    ],
-});
 
-const Cart = mongoose.model(cartCollection, cartSchema);
+const cartSchema = new mongoose.Schema(
+  {
+    products: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1, // Arranca en 1
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+// Creo carrito
+const Cart = mongoose.model('Cart', cartSchema);
+
 export default Cart;

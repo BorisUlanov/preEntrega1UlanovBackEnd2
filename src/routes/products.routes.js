@@ -1,5 +1,5 @@
-import { router } from 'express';
-import Product from '../models.product.model.js';
+import { Router } from 'express';
+import Product from '../dao/mongo/product.dao.js';
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
         filter.$or = [
             { category: { $regex: query, $options: 'i' } },
             { available: query === 'true' }
-        ];//Creditos para W3Schools para el fintro con regex
+        ];//Creditos para W3Schools para el filtro con regex
     }
 
     const sortOption = {};
@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
         sort: sortOption,
     };
 
+try{
     const result = await Product.paginate(filter, options);
     const { docs, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage } = result;
 //Añado elementos de la consigna
@@ -40,6 +41,10 @@ router.get('/', async (req, res) => {
         prevLink: hasPrevPage ? `/products?page=${prevPage}&limit=${limit}` : null,
         nextLink: hasNextPage ? `/products?page=${nextPage}&limit=${limit}` : null,
     });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener productos', error });
+      }
+
 });
 
 export default router;
